@@ -25,19 +25,21 @@ spec:
     requests:
       storage: 20Gi
 ---
-apiVersion: apps/v1
-kind: Deployment
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: wordpress
   labels:
     app: wordpress
 spec:
-  selector:
-    matchLabels:
-      app: wordpress
-      tier: frontend
   strategy:
-    type: Recreate
+    canary:
+      maxSurge: 1
+      maxUnavailable: 1
+      steps:
+        - setWeight: 1
+        - pause: {}
   template:
     metadata:
       labels:
